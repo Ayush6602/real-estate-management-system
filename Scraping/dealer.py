@@ -32,8 +32,8 @@ try:
         phone_number: str = ''.join(
             [random.choice(string.digits) for _ in range(10)])
         print(locality, name, property_link, phone_number, mail, sep='\n')
-        dealers.append('(' + name + ',' + password + ',' +
-                       phone_number + ',' + mail + ')')
+        dealers.append('(' + '"' + name + '"' + ',' + '"' + password + '"' + ',' +
+                       phone_number + ',' + '"' + mail + '"' + ')')
         i += 1
 finally:
     with open('dealers.txt', 'w') as dealers_txt:
