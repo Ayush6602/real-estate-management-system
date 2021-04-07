@@ -29,7 +29,7 @@ try:
         name = name.strip()
         username = name.replace(' ', '_').lower()
         password = username
-        mail: str = name.replace(' ', '_') + ''.join([random.choice(
+        mail: str = username.replace('_', '.') + ''.join([random.choice(
             string.digits) for _ in range(4)]) + '@' + random.choice(mails) + '.com'
         phone_number: str = ''.join(
             [random.choice(string.digits) for _ in range(10)])
