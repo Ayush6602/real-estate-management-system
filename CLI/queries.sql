@@ -5,15 +5,12 @@ WHERE rent BETWEEN 20000 AND 40000;
 -- Q2
 select contact_no,
 	dl.name
-from dealer dl,
-	property_dealer prp_dl,
-	property prp,
+from dealer dl NATURAL JOIN 
+	property_dealer prp_dl NATURAL JOIN 
+	property prp NATURAL JOIN 
 	description des,
 	locality loc
-where dl.username = prp_dl.d_username
-	and prp.id = prp_dl.p_id
-	and prp.id = des.id
-	and prp.locality_id = loc.id
+where prp.locality_id = loc.id
 	and bedroom >= 2
 	and rent < 10000
 	and loc.name = 'G.S. Road';
@@ -43,11 +40,10 @@ SELECT name as locality_name,
 	address,
 	size,
 	price
-from locality,
+from property NATURAL JOIN 
 	description,
-	property
-WHERE description.id = property.id
-	and locality.id = property.locality_id
+	locality
+WHERE locality.id = property.locality_id
 	and description.bedroom >= 2
 	and description.status != 'sold';
 -- Q5
