@@ -1,5 +1,5 @@
 -- Q1
-SELECT DISTINCT address
+SELECT address
 FROM property
 WHERE rent BETWEEN 20000 AND 40000;
 -- Q2
@@ -56,9 +56,5 @@ FROM property
 	NATURAL JOIN description
 WHERE price = (
 		SELECT MAX(price)
-		FROM property
-	)
-	OR rent = (
-		SELECT MAX(rent)
 		FROM property
 	);
