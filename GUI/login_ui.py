@@ -1,4 +1,5 @@
 from GUI.db_connection import DBConnection
+from GUI.admin_ui import AdminUi
 import tkinter as tk
 
 
@@ -19,8 +20,13 @@ class LoginUi(tk.Frame):
         user_type = self.db_connection.get_user_type(
             self.username.get(), self.password.get())
         if user_type == DBConnection.ADMIN:
-            self.status_label.configure(
-                text='Welcome Admin', foreground='green')
+            db_connection = DBConnection()
+            root = tk.Tk()
+            root.title('Welcome Admin')
+            root.geometry('450x450')
+            app = AdminUi(root, db_connection)
+            app.pack()
+            app.mainloop()
         elif user_type == DBConnection.DEALER:
             self.status_label.configure(
                 text='Welcome Dealer', foreground='green')
