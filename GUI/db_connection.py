@@ -1,4 +1,3 @@
-from tkinter.constants import SEL
 import mysql.connector as mysql
 from mysql.connector.cursor import MySQLCursor
 

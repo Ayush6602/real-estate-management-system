@@ -10,7 +10,7 @@ class LoginUi(tk.Frame):
         self.password = tk.StringVar(value='Password')
         self.db_connection = db_connection
         tk.Entry(self, textvariable=self.username).pack()
-        tk.Entry(self, textvariable=self.password).pack()
+        tk.Entry(self, textvariable=self.password, show='*').pack()
         tk.Button(self, text='Login', command=self.login).pack()
         self.status_label = tk.Label(self, text='Enter Username and Password')
         self.status_label.pack()
