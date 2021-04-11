@@ -1,5 +1,6 @@
 from tkinter.constants import SEL
 import mysql.connector as mysql
+from mysql.connector import cursor
 from mysql.connector.cursor import MySQLCursor
 
 
@@ -32,3 +33,8 @@ class DBConnection:
         if self.cursor.fetchone() is not None:
             return 'client'
         return 'unknown user'
+
+    def report(self,query: str) :
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
+        
