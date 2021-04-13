@@ -1,3 +1,4 @@
+from GUI.agent_ui import AgentUi
 from GUI.db_connection import DBConnection
 from GUI.admin_ui import AdminUi
 import tkinter as tk
@@ -20,6 +21,8 @@ class LoginUi(tk.Canvas):
         self.bind('<Configure>', self.render)
 
     def render(self, event: tk.Event = None) -> None:
+        if not self.winfo_exists():
+            return
         if event is None:
             height = self.winfo_height()
             width = self.winfo_width()
@@ -72,12 +75,12 @@ class LoginUi(tk.Canvas):
         user_type = self.db_connection.get_user_type(
             self.username_var.get(), self.password_var.get())
         if user_type == DBConnection.ADMIN:
-            admin_ui = AdminUi(self.master, self.db_connection)
             self.destroy()
-            admin_ui.pack(expand=True)
-            admin_ui.mainloop()
+            AdminUi(self.master, self.db_connection).pack(expand=True)
         elif user_type == DBConnection.DEALER:
-            self.title_text = 'Welcome Dealer'
+            self.destroy()
+            AgentUi(self.master, self.db_connection,
+                    self.username_var.get()).pack(fill=tk.X)
         elif user_type == DBConnection.CLIENT:
             self.title_text = 'Welcome Client'
         else:

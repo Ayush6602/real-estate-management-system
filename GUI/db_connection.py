@@ -22,18 +22,17 @@ class DBConnection:
         self.cursor.execute(
             "select * from admin where username = %s and password = %s", (username, password))
         if self.cursor.fetchone() is not None:
-            return 'admin'
+            return DBConnection.ADMIN
         self.cursor.execute(
-            "select * from dealer where username = %s and password = %s")
+            "select * from dealer where username = %s and password = %s", (username, password))
         if self.cursor.fetchone() is not None:
-            return 'dealer'
+            return DBConnection.DEALER
         self.cursor.execute(
-            "select * from client where username = %s and password = %s")
+            "select * from client where username = %s and password = %s", (username, password))
         if self.cursor.fetchone() is not None:
-            return 'client'
+            return DBConnection.CLIENT
         return 'unknown user'
 
-    def report(self,query: str) :
+    def report(self, query: str):
         self.cursor.execute(query)
         return self.cursor.fetchall()
-        
