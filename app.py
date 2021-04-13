@@ -7,9 +7,8 @@ def main() -> None:
     db_connection = DBConnection()
     root = tk.Tk()
     root.title('Real Estate Management App')
-    root.geometry('450x300')
-    app = LoginUi(root, db_connection)
-    app.pack(expand=True)
+    root.geometry('1280x720')
+    login_ui_canvas = LoginUi(root, db_connection)
     root.mainloop()
 
 

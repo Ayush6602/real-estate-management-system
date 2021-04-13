@@ -1,38 +1,85 @@
 from GUI.db_connection import DBConnection
 from GUI.admin_ui import AdminUi
 import tkinter as tk
+from PIL.ImageTk import PhotoImage
+from PIL import Image
 
 
-class LoginUi(tk.Frame):
-    def __init__(self, master, db_connection: DBConnection) -> None:
+class LoginUi(tk.Canvas):
+    def __init__(self, master: tk.Tk, db_connection: DBConnection) -> None:
         super().__init__(master)
         self.master = master
-        self.username = tk.StringVar(value='Username')
-        self.password = tk.StringVar(value='Password')
+        self.configure(highlightthickness=0)
         self.db_connection = db_connection
-        tk.Entry(self, textvariable=self.username).pack()
-        tk.Entry(self, textvariable=self.password, show='*').pack()
-        tk.Button(self, text='Login', command=self.login).pack()
-        self.status_label = tk.Label(self, text='Enter Username and Password')
-        self.status_label.pack()
+        self.login_bg_img = Image.open('images/login_bg.jpg')
+        self.login_bg_pimg = PhotoImage(self.login_bg_img)
+        self.username_var = tk.StringVar(self, 'Username')
+        self.password_var = tk.StringVar(self, 'Password')
+        self.title_text = 'Welcome'
+        self.pack(expand=True, fill='both')
+        self.bind('<Configure>', self.render)
 
-    def login(self) -> None:
-        user_type = self.db_connection.get_user_type(
-            self.username.get(), self.password.get())
-        if user_type == DBConnection.ADMIN:
-            db_connection = DBConnection()
-            root = tk.Tk()
-            root.title('Welcome Admin')
-            root.geometry('450x450')
-            app = AdminUi(root, db_connection)
-            app.pack()
-            app.mainloop()
-        elif user_type == DBConnection.DEALER:
-            self.status_label.configure(
-                text='Welcome Dealer', foreground='green')
-        elif user_type == DBConnection.CLIENT:
-            self.status_label.configure(
-                text='Welcome Client', foreground='green')
+    def render(self, event: tk.Event = None) -> None:
+        if event is None:
+            height = self.winfo_height()
+            width = self.winfo_width()
         else:
-            self.status_label.configure(
-                text='Username Or Password Is Incorrect', foreground='red')
+            height = event.height
+            width = event.width
+        # clear canvas
+        self.delete('all')
+        # set background
+        self.login_bg_pimg = PhotoImage(self.login_bg_img.resize(
+            (width, height), Image.ANTIALIAS))
+        self.create_image(0, 0, anchor='nw',
+                          image=self.login_bg_pimg)
+        # set header text
+        self.create_text(width // 2, height // 5, text=self.title_text,
+                         font=f'ariel {min(width, height) // 20} bold', fill='yellow')
+        # set username entry
+        username_entry = tk.Entry(self, textvariable=self.username_var,
+                                  font=f'ariel {min(width, height) // 40}')
+        username_entry.bind('<ButtonRelease-1>', self.clear_username_entry)
+        username_entry.bind('<Return>', self.login)
+        self.create_window(width // 2, 2 * height //
+                           5, window=username_entry)
+        # set password entry
+        password_entry = tk.Entry(self, textvariable=self.password_var,
+                                  font=f'ariel {min(width, height) // 40}')
+        if self.password_var.get() != 'Password':
+            password_entry.configure(show='*')
+        password_entry.bind('<ButtonRelease-1>', self.clear_password_entry)
+        password_entry.bind('<Return>', self.login)
+        self.create_window(width // 2, 2.5 * height //
+                           5, window=password_entry)
+        # set login button
+        login_btn = tk.Button(self, text='Login',
+                              borderwidth=0, background='green', font=f'ariel {min(width, height) // 50}', command=self.login, activebackground='yellow')
+        self.create_window(width // 2, 3 * height //
+                           5, window=login_btn)
+
+    def clear_username_entry(self, event: tk.Event) -> None:
+        if self.username_var.get() == 'Username':
+            self.username_var.set('')
+            self.render()
+
+    def clear_password_entry(self, event: tk.Event) -> None:
+        if self.password_var.get() == 'Password':
+            self.password_var.set('')
+            self.render()
+
+    def login(self, event: tk.Event = None) -> None:
+        user_type = self.db_connection.get_user_type(
+            self.username_var.get(), self.password_var.get())
+        if user_type == DBConnection.ADMIN:
+            admin_ui = AdminUi(self.master, self.db_connection)
+            self.destroy()
+            admin_ui.pack(expand=True)
+            admin_ui.mainloop()
+        elif user_type == DBConnection.DEALER:
+            self.title_text = 'Welcome Dealer'
+        elif user_type == DBConnection.CLIENT:
+            self.title_text = 'Welcome Client'
+        else:
+            self.title_text = 'Unknown User'
+        self.render()
