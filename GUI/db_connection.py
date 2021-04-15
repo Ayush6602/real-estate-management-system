@@ -58,3 +58,12 @@ class DBConnection:
             'Halls': result[12],
             'Size sq.ft.': result[4],
         }
+
+    def get_property(self, username: str):
+        self.cursor.execute(
+            "SELECT address, price, rent FROM property NATURAL JOIN description NATURAL JOIN property_dealer NATURAL JOIN dealer WHERE username = %s;", (username,))
+        return(self.cursor.fetchall())
+
+    def get_transaction(self, username: str):
+        self.cursor.execute(
+            "SELECT date, price, rent, client FROM transaction WHERE dealer = %s", (username,))
