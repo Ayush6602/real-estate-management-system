@@ -23,43 +23,50 @@ class LoginUi(tk.Canvas):
     def render(self, event: tk.Event = None) -> None:
         if not self.winfo_exists():
             return
-        if event is None:
-            height = self.winfo_height()
-            width = self.winfo_width()
-        else:
-            height = event.height
-            width = event.width
+        height = self.winfo_height()
+        width = self.winfo_width()
         # clear canvas
         self.delete('all')
         # set background
-        self.login_bg_pimg = PhotoImage(self.login_bg_img.resize(
-            (width, height), Image.ANTIALIAS))
+        self.login_bg_pimg = PhotoImage(
+            self.login_bg_img.resize((width, height), Image.ANTIALIAS))
         self.create_image(0, 0, anchor='nw',
                           image=self.login_bg_pimg)
         # set header text
-        self.create_text(width // 2, height // 5, text=self.title_text,
-                         font=f'ariel {min(width, height) // 20} bold', fill='yellow')
+        head_txt_x = width // 2
+        head_txt_y = height // 5
+        head_txt_font = f'ariel {min(width, height) // 20} bold'
+        self.create_text(head_txt_x, head_txt_y,
+                         text=self.title_text, font=head_txt_font, fill='yellow')
         # set username entry
-        username_entry = tk.Entry(self, textvariable=self.username_var,
-                                  font=f'ariel {min(width, height) // 40}')
+        usrnm_ent_font = f'ariel {min(width, height) // 40}'
+        usrnm_ent_x = width / 2
+        usrnm_ent_y = 2 * height / 5
+        username_entry = tk.Entry(
+            self, textvariable=self.username_var, font=usrnm_ent_font)
         username_entry.bind('<ButtonRelease-1>', self.clear_username_entry)
         username_entry.bind('<Return>', self.login)
-        self.create_window(width // 2, 2 * height //
-                           5, window=username_entry)
+        self.create_window(int(usrnm_ent_x), int(
+            usrnm_ent_y), window=username_entry)
         # set password entry
-        password_entry = tk.Entry(self, textvariable=self.password_var,
-                                  font=f'ariel {min(width, height) // 40}')
+        pwd_ent_font = f'ariel {min(width, height) // 40}'
+        pwd_ent_x = width / 2
+        pwd_ent_y = 2.5 * height / 5
+        password_entry = tk.Entry(
+            self, textvariable=self.password_var, font=pwd_ent_font)
         if self.password_var.get() != 'Password':
             password_entry.configure(show='*')
         password_entry.bind('<ButtonRelease-1>', self.clear_password_entry)
         password_entry.bind('<Return>', self.login)
-        self.create_window(width // 2, 2.5 * height //
-                           5, window=password_entry)
+        self.create_window(int(pwd_ent_x), int(
+            pwd_ent_y), window=password_entry)
         # set login button
-        login_btn = tk.Button(self, text='Login',
-                              borderwidth=0, background='green', font=f'ariel {min(width, height) // 50}', command=self.login, activebackground='yellow')
-        self.create_window(width // 2, 3 * height //
-                           5, window=login_btn)
+        lgn_btn_font = f'ariel {min(width, height) // 50}'
+        lgn_btn_x = width / 2
+        lgn_btn_y = 3 * height / 5
+        login_btn = tk.Button(self, text='Login', borderwidth=0, background='green',
+                              font=lgn_btn_font, command=self.login, activebackground='yellow')
+        self.create_window(int(lgn_btn_x), int(lgn_btn_y), window=login_btn)
 
     def clear_username_entry(self, event: tk.Event) -> None:
         if self.username_var.get() == 'Username':

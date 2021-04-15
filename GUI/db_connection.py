@@ -1,5 +1,4 @@
 import mysql.connector as mysql
-from mysql.connector import cursor
 from mysql.connector.cursor import MySQLCursor
 
 
@@ -36,3 +35,26 @@ class DBConnection:
     def report(self, query: str):
         self.cursor.execute(query)
         return self.cursor.fetchall()
+
+    def get_property_details(self, property_id: int) -> dict:
+        self.cursor.execute(
+            'select * from property natural join description natural join locality where id = %s', (property_id,))
+        result = self.cursor.fetchone()
+        if result is None:
+            return {}
+        return {
+            'locality_id': result[0],
+            'id': result[1],
+            'image_link': result[2],
+            'Locality': result[13],
+            'Address': result[3],
+            'Price': result[5],
+            'Rent': result[6],
+            'Type': result[7],
+            'Status': result[8],
+            'Bedrooms': result[9],
+            'Bathrooms': result[10],
+            'Kitchens': result[11],
+            'Halls': result[12],
+            'Size sq.ft.': result[4],
+        }
