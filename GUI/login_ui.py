@@ -79,8 +79,7 @@ class LoginUi(tk.Canvas):
             AdminUi(self.master, self.db_connection).pack(expand=True)
         elif user_type == DBConnection.DEALER:
             self.destroy()
-            AgentUi(self.master, self.db_connection,
-                    self.username_var.get()).pack(fill=tk.X)
+            AgentUi(self.master, self.db_connection, self.username_var.get())
         elif user_type == DBConnection.CLIENT:
             self.title_text = 'Welcome Client'
         else:
