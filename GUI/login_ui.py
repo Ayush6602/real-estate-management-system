@@ -12,7 +12,7 @@ class LoginUi(tk.Canvas):
         self.master = master
         self.configure(highlightthickness=0)
         self.db_connection = db_connection
-        self.login_bg_img = Image.open('images/login_bg.jpg')
+        self.login_bg_img = Image.open('C:\\Users\\Almas\\Documents\\Visual Studio 2019\\Code\\real-estate-management-system\\images\\login_bg.jpg')
         self.login_bg_pimg = PhotoImage(self.login_bg_img)
         self.username_var = tk.StringVar(self, 'Username')
         self.password_var = tk.StringVar(self, 'Password')

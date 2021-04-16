@@ -10,7 +10,7 @@ class AgentUi(tk.Canvas):
         super().__init__(master)
         self.master = master
         self.property_id = tk.StringVar(value="property")
-        self.login_bg_img = Image.open('images/login_bg.jpg')
+        self.login_bg_img = Image.open('C:\\Users\\Almas\\Documents\\Visual Studio 2019\\Code\\real-estate-management-system\\images\\login_bg.jpg')
         self.login_bg_pimg = PhotoImage(self.login_bg_img)
         self.db_connection = db_connection
         self.username = username
