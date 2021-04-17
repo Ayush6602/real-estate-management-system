@@ -67,3 +67,4 @@ class DBConnection:
     def get_transaction(self, username: str):
         self.cursor.execute(
             "SELECT date, price, rent, client FROM transaction WHERE dealer = %s", (username,))
+        return (self.cursor.fetchall())
