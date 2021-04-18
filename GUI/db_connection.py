@@ -1,5 +1,6 @@
 import mysql.connector as mysql
 from mysql.connector.cursor import MySQLCursor
+from prettytable import from_db_cursor
 
 
 class DBConnection:
@@ -32,9 +33,21 @@ class DBConnection:
             return DBConnection.CLIENT
         return 'unknown user'
 
-    def report(self, query: str):
+    def command_result(self, query: str):
         self.cursor.execute(query)
-        return self.cursor.fetchall()
+        return from_db_cursor(self.cursor)
+
+    def get_rental_report(self):
+        self.cursor.execute(
+            "select p_id,date,rent,rent_duration,dealer,client from transaction where rent is not null"
+        )
+        return from_db_cursor(self.cursor)
+    
+    def get_sales_report(self):
+        self.cursor.execute(
+            "select p_id,date,price,dealer,client from transaction where price is not null"
+        )
+        return from_db_cursor(self.cursor)
 
     def get_property_details(self, property_id: int) -> dict:
         self.cursor.execute(
