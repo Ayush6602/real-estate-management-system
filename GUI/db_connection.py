@@ -90,3 +90,32 @@ class DBConnection:
     def get_id(self, address:str) -> int:
         self.cursor.execute("SELECT id FROM property WHERE address = %s;", (address,))
         return (self.cursor.fetchall()[0][0])
+
+    def get_property(self, username:str):
+        self.cursor.execute("SELECT address, price, rent FROM property NATURAL JOIN description NATURAL JOIN property_dealer NATURAL JOIN dealer WHERE username = %s;", (username,))
+        return(self.cursor.fetchall())
+
+    def get_transaction(self, username:str):
+        self.cursor.execute("SELECT date, price, rent, client FROM transaction WHERE dealer = %s", (username,))
+        
+    def get_locality(self):
+        self.cursor.execute("SELECT name from locality;")
+        return [result[0] for result in self.cursor.fetchall()]
+    def get_size(self):
+        self.cursor.execute("SELECT size from property;")
+        return [result[0] for result in self.cursor.fetchall()]
+    def get_bedroom(self):
+        self.cursor.execute("SELECT bedroom from description;")
+        return [result[0] for result in self.cursor.fetchall()]
+        
+    def outputlocality(self,input):
+        self.cursor.execute("SELECT * from property natural join locality natural join description where locality.name=%s;",(input,))
+        return(self.cursor.fetchall())
+    
+    def outputsize(self,input1):
+        self.cursor.execute("SELECT * from property natural join locality natural join description where property.size=%s;",(input1,))
+        return(self.cursor.fetchall())
+    
+    def outputbed(self,input2):
+        self.cursor.execute("SELECT * from property natural join locality natural join description where description.bedroom=%s;",(input2,))
+        return(self.cursor.fetchall())

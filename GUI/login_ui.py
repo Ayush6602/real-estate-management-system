@@ -1,6 +1,7 @@
 from GUI.agent_ui import AgentUi
 from GUI.db_connection import DBConnection
 from GUI.admin_ui import AdminUi
+from GUI.search_ui import SearchUi
 import tkinter as tk
 from PIL.ImageTk import PhotoImage
 from PIL import Image
@@ -12,7 +13,7 @@ class LoginUi(tk.Canvas):
         self.master = master
         self.configure(highlightthickness=0)
         self.db_connection = db_connection
-        self.login_bg_img = Image.open('C:\\Users\\Almas\\Documents\\Visual Studio 2019\\Code\\real-estate-management-system\\images\\login_bg.jpg')
+        self.login_bg_img = Image.open('images/login_bg.jpg')
         self.login_bg_pimg = PhotoImage(self.login_bg_img)
         self.username_var = tk.StringVar(self, 'Username')
         self.password_var = tk.StringVar(self, 'Password')
@@ -89,6 +90,8 @@ class LoginUi(tk.Canvas):
             AgentUi(self.master, self.db_connection, self.username_var.get())
         elif user_type == DBConnection.CLIENT:
             self.title_text = 'Welcome Client'
+            self.destroy()
+            SearchUi(self.master, self.db_connection)
         else:
             self.title_text = 'Unknown User'
         self.render()
