@@ -1,4 +1,5 @@
 from GUI.db_connection import DBConnection
+from GUI.add_modify_property_ui import AddModifyProperty
 import tkinter as tk
 from PIL.ImageTk import PhotoImage
 from PIL import Image
@@ -9,9 +10,8 @@ class AgentUi(tk.Canvas):
     def __init__(self, master, db_connection: DBConnection, username) -> None:
         super().__init__(master)
         self.master = master
-        self.property_id = tk.StringVar(value="property")
-        self.login_bg_img = Image.open('images/login_bg.jpg')
-        self.login_bg_pimg = PhotoImage(self.login_bg_img)
+        self.agent_bg_img = Image.open('images/agent_bg.jpeg')
+        self.agent_bg_pimg = PhotoImage(self.agent_bg_img)
         self.db_connection = db_connection
         self.username = username
         self.pack(fill=tk.BOTH, expand=True)
@@ -31,9 +31,8 @@ class AgentUi(tk.Canvas):
             width = event.width
         self.delete('all')
         # set background
-        self.login_bg_pimg = PhotoImage(
-            self.login_bg_img.resize((width, height), Image.ANTIALIAS))
-        self.create_image(0, 0, anchor='nw', image=self.login_bg_pimg)
+        self.agent_bg_pimg = PhotoImage(self.agent_bg_img.resize((width, height), Image.ANTIALIAS))
+        self.create_image(0, 0, anchor='nw', image=self.agent_bg_pimg)
         
         property_head = self.create_text(width/4, 10, text="Property", anchor="n", font=f'ariel {min(width, height) // 30} bold', fill="white")
         transaction_head = self.create_text(3*width/4, 10, text="Transaction", anchor="n", font=f'ariel {min(width, height) // 30} bold', fill="white")
@@ -52,7 +51,7 @@ class AgentUi(tk.Canvas):
         property_tree.heading("Price", text="Price")
         property_tree.heading("Rent", text="Rent")
 
-        transaction_tree = ttk.Treeview(self)
+        transaction_tree = ttk.Treeview(self, selectmode="none")
         self.create_window(width//2 + 10, 50, anchor="nw", width=width//2-10, window=transaction_tree)
         transaction_tree['columns'] = ('Date', 'Price', 'Rent', 'Client Name')
 
@@ -74,5 +73,46 @@ class AgentUi(tk.Canvas):
 
         if self.transactions is not None:
             for i in range(len(self.transactions)):
-                transaction_tree.insert(
-                    parent='', index='end', iid=i, values=self.transactions[i])
+                transaction_tree.insert(parent='', index='end', iid=i, values=self.transactions[i])
+
+        add = tk.Button(self, text='Add Property', command = self.add_property, font=("calibri", 20), activebackground="blue")
+        self.create_window(width//4, 500, anchor="center", window=add)
+        modify = tk.Button(self, text='Modify Property', command = lambda: self.modify_property(property_tree), font=("calibri", 20), activebackground="yellow")
+        self.create_window(2*width//4, 500, anchor="center", window=modify)
+        delete = tk.Button(self, text='Delete Property', command = lambda: self.delete_property(property_tree), font=("calibri", 20), activebackground="pink")
+        self.create_window(3*width//4, 500, anchor="center", window=delete)
+
+    def add_property(self)->None:
+        add_property = tk.Tk()
+        add_property.title("ADD PROPERTY")
+        add_property.geometry("1280x720")
+        AddModifyProperty(add_property, self.db_connection, None)
+        
+    def modify_property(self, tv:ttk.Treeview)->None:
+        item = tv.focus()
+        selected = tv.item(item)
+        # print(selected['values'][0])
+        if len(selected['values']) == 0:
+            print("No property selected")
+            return
+        address = selected['values'][0]
+
+        add_property = tk.Tk()
+        add_property.title("MODIFY PROPERTY")
+        add_property.geometry("1280x720")
+        AddModifyProperty(add_property, self.db_connection, self.db_connection.get_id(address))
+
+    def delete_property(self, tv:ttk.Treeview)->None:
+        item = tv.focus()
+        selected = tv.item(item)
+        # print(selected['values'][0])
+        if len(selected['values']) == 0:
+            print("No property selected")
+            return
+        address = selected['values'][0]
+        self.db_connection.delete_property(address)
+
+        item = tv.selection()[0]
+        tv.delete(item)
+        
+        print(address)

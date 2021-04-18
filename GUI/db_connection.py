@@ -68,3 +68,12 @@ class DBConnection:
         self.cursor.execute(
             "SELECT date, price, rent, client FROM transaction WHERE dealer = %s", (username,))
         return (self.cursor.fetchall())
+
+    def delete_property(self, address:str):
+        self.cursor.execute(
+            "DELETE description, property, property_dealer FROM description INNER JOIN property INNER JOIN property_dealer WHERE address = %s;", (address,)
+        )
+
+    def get_id(self, address:str) -> int:
+        self.cursor.execute("SELECT id FROM property WHERE address = %s;", (address,))
+        return (self.cursor.fetchall()[0][0])
