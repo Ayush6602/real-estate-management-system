@@ -8,7 +8,7 @@ from tkinter import ttk
 
 
 class AgentUi(tk.Canvas):
-    def __init__(self, master, db_connection: DBConnection, username) -> None:
+    def __init__(self, master, db_connection: DBConnection, username:str) -> None:
         super().__init__(master)
         self.master = master
         self.agent_bg_img = Image.open('images/agent_bg.jpg')
@@ -17,8 +17,7 @@ class AgentUi(tk.Canvas):
         self.username = username
         self.pack(fill=tk.BOTH, expand=True)
         self.bind('<Configure>', self.render)
-        self.properties = self.db_connection.get_property(self.username)
-        self.transactions = self.db_connection.get_transaction(self.username)
+        
 
         
     def render(self, event: tk.Event = None) -> None:
@@ -68,15 +67,18 @@ class AgentUi(tk.Canvas):
         self.transaction_tree.heading("Rent", text="Rent")
         self.transaction_tree.heading("Client Name", text="Client Name")
 
-        if self.properties is not None:
-            for i in range(len(self.properties)):
-                self.property_tree.insert(parent='', index='end', iid=i, values=self.properties[i])
+        properties = self.db_connection.get_property(self.username)
+        transactions = self.db_connection.get_transaction(self.username)
+
+        if properties is not None:
+            for i in range(len(properties)):
+                self.property_tree.insert(parent='', index='end', iid=i, values=properties[i])
 
         self.property_tree.bind("<Double-1>", self.show_property)
 
-        if self.transactions is not None:
-            for i in range(len(self.transactions)):
-                self.transaction_tree.insert(parent='', index='end', iid=i, values=self.transactions[i])
+        if transactions is not None:
+            for i in range(len(transactions)):
+                self.transaction_tree.insert(parent='', index='end', iid=i, values=transactions[i])
 
         add = tk.Button(self, text='Add Property', command = self.add_property, font=("calibri", 20), activebackground="blue")
         self.create_window(width//4, 500, anchor="center", window=add)
@@ -92,7 +94,8 @@ class AgentUi(tk.Canvas):
         # print(item)
         selected_id = self.db_connection.get_property_id(selected['values'][0])
         
-        property_window = tk.Toplevel(self, height = '1280', width = '720')
+        property_window = tk.Toplevel(self)
+        property_window.geometry("1280x720")
         PropertyUi(property_window, self.db_connection, "xyz", selected_id)
 
 
@@ -127,7 +130,7 @@ class AgentUi(tk.Canvas):
         address = selected['values'][0]
         self.db_connection.delete_property(address)
 
-        item = tv.selection()[0]
-        tv.delete(item)
+        item = self.property_tree.selection()[0]
+        self.property_tree.delete(item)
         
-        print(address)
+        # print(address)

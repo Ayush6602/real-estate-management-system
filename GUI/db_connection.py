@@ -120,15 +120,15 @@ class DBConnection:
         self.cursor.execute("SELECT * from property natural join locality natural join description where description.bedroom=%s;",(input2,))
         return(self.cursor.fetchall())
     
-    def add_property(self, **args) ->None:
+    def add_property(self, **kwargs) ->None:
         try:
             self.cursor.execute(
-                "INSERT INTO property VALUES (%s, %s, %s, %s, %s, %s, %s);", (args['description_id'], args['property_image'], args['property_address'], args['property_size'], args['property_price'], args['property_rent'], args['property_locality'])
+                "INSERT INTO property VALUES (%s, %s, %s, %s, %s, %s, %s);", (kwargs['description_id'], kwargs['property_image'], kwargs['property_address'], kwargs['property_size'], kwargs['property_price'], kwargs['property_rent'], kwargs['property_locality'])
             )
             self.cursor.execute(
-                "INSERT INTO description VALUES (%s, %s, %s, %s, %s, %s, %s);", (args['description_id'], args['description_type'], args['description_status'], args['description_bedroom'], args['description_bathroom'], args['description_kitchen'], args['description_hall'])
+                "INSERT INTO description VALUES (%s, %s, %s, %s, %s, %s, %s);", (kwargs['description_id'], kwargs['description_type'], kwargs['description_status'], kwargs['description_bedroom'], kwargs['description_bathroom'], kwargs['description_kitchen'], kwargs['description_hall'])
             )
-            self.cursor.execute("INSERT INTO property_dealer VALUES (%s, %s);", (args['description_id'], args['dealer']))
+            self.cursor.execute("INSERT INTO property_dealer VALUES (%s, %s);", (kwargs['description_id'], kwargs['dealer']))
             print("done")
             self.connection.commit()
 
@@ -136,13 +136,13 @@ class DBConnection:
             print("Failed to update record to database rollback: {}".format(error))
             self.connection.rollback()
 
-    def modify_property(self, **args) ->None:
+    def modify_property(self, **kwargs) ->None:
         try:
             self.cursor.execute(
-                "UPDATE property SET images=%s, address=%s, size=%s, price=%s, rent=%s, locality_id=%s WHERE id = %s;", (args['property_image'], args['property_address'], args['property_size'], args['property_price'], args['property_rent'], args['property_locality'], args['description_id'])
+                "UPDATE property SET images=%s, address=%s, size=%s, price=%s, rent=%s, locality_id=%s WHERE id = %s;", (kwargs['property_image'], kwargs['property_address'], kwargs['property_size'], kwargs['property_price'], kwargs['property_rent'], kwargs['property_locality'], kwargs['description_id'])
             )
             self.cursor.execute(
-                "UPDATE description SET type=%s, status=%s, bedroom=%s, bathroom=%s, kitchen=%s, hall=%s;", (args['description_type'], args['description_status'], args['description_bedroom'], args['description_bathroom'], args['description_kitchen'], args['description_hall'])
+                "UPDATE description SET type=%s, status=%s, bedroom=%s, bathroom=%s, kitchen=%s, hall=%s WHERE id = %s;", (kwargs['description_type'], kwargs['description_status'], kwargs['description_bedroom'], kwargs['description_bathroom'], kwargs['description_kitchen'], kwargs['description_hall'], kwargs['description_id'])
             )
             print("done")
             self.connection.commit()
@@ -153,9 +153,15 @@ class DBConnection:
         
 
     def delete_property(self, address:str):
-        self.cursor.execute(
-            "DELETE description, property, property_dealer FROM description INNER JOIN property INNER JOIN property_dealer WHERE address = %s;", (address,)
-        )
+        try:
+            self.cursor.execute(
+                "DELETE property FROM description INNER JOIN property INNER JOIN property_dealer WHERE address = %s;", (address,)
+            )
+            self.connection.commit()
+
+        except mysql.Error as error:
+            print("Failed to update record to database rollback: {}".format(error))
+            self.connection.rollback()
 
     def get_property_locality(self,input):
         self.cursor.execute("SELECT * from property natural join locality natural join description where locality.name=%s;",(input,))
