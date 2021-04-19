@@ -1,6 +1,6 @@
 import mysql.connector as mysql
 from mysql.connector.cursor import MySQLCursor
-from prettytable import from_db_cursor
+# from prettytable import from_db_cursor
 
 
 class DBConnection:
@@ -82,21 +82,21 @@ class DBConnection:
             "SELECT date, price, rent, client FROM transaction WHERE dealer = %s", (username,))
         return (self.cursor.fetchall())
 
-    def delete_property(self, address:str):
-        self.cursor.execute(
-            "DELETE description, property, property_dealer FROM description INNER JOIN property INNER JOIN property_dealer WHERE address = %s;", (address,)
-        )
-
-    def get_id(self, address:str) -> int:
+    def get_property_id(self, address:str) -> int:
         self.cursor.execute("SELECT id FROM property WHERE address = %s;", (address,))
         return (self.cursor.fetchall()[0][0])
 
-    def get_property(self, username:str):
+    def get_locality_id(self, locality:str) -> int:
+        self.cursor.execute("SELECT locality_id FROM locality WHERE name = %s;", (locality,))
+        return self.cursor.fetchall()[0][0]
+
+    def get_property(self, username:str) -> list:
         self.cursor.execute("SELECT address, price, rent FROM property NATURAL JOIN description NATURAL JOIN property_dealer NATURAL JOIN dealer WHERE username = %s;", (username,))
         return(self.cursor.fetchall())
 
-    def get_transaction(self, username:str):
+    def get_transaction(self, username:str) -> list:
         self.cursor.execute("SELECT date, price, rent, client FROM transaction WHERE dealer = %s", (username,))
+        return(self.cursor.fetchall())
         
     def get_locality(self):
         self.cursor.execute("SELECT name from locality;")
@@ -120,7 +120,55 @@ class DBConnection:
         self.cursor.execute("SELECT * from property natural join locality natural join description where description.bedroom=%s;",(input2,))
         return(self.cursor.fetchall())
     
+    def add_property(self, **args) ->None:
+        try:
+            self.cursor.execute(
+                "INSERT INTO property VALUES (%s, %s, %s, %s, %s, %s, %s);", (args['description_id'], args['property_image'], args['property_address'], args['property_size'], args['property_price'], args['property_rent'], args['property_locality'])
+            )
+            self.cursor.execute(
+                "INSERT INTO description VALUES (%s, %s, %s, %s, %s, %s, %s);", (args['description_id'], args['description_type'], args['description_status'], args['description_bedroom'], args['description_bathroom'], args['description_kitchen'], args['description_hall'])
+            )
+            self.cursor.execute("INSERT INTO property_dealer VALUES (%s, %s);", (args['description_id'], args['dealer']))
+            print("done")
+            self.connection.commit()
+
+        except mysql.Error as error:
+            print("Failed to update record to database rollback: {}".format(error))
+            self.connection.rollback()
+
+    def modify_property(self, **args) ->None:
+        try:
+            self.cursor.execute(
+                "UPDATE property SET images=%s, address=%s, size=%s, price=%s, rent=%s, locality_id=%s WHERE id = %s;", (args['property_image'], args['property_address'], args['property_size'], args['property_price'], args['property_rent'], args['property_locality'], args['description_id'])
+            )
+            self.cursor.execute(
+                "UPDATE description SET type=%s, status=%s, bedroom=%s, bathroom=%s, kitchen=%s, hall=%s;", (args['description_type'], args['description_status'], args['description_bedroom'], args['description_bathroom'], args['description_kitchen'], args['description_hall'])
+            )
+            print("done")
+            self.connection.commit()
+        
+        except mysql.Error as error:
+            print("Failed to update record to database rollback: {}".format(error))
+            self.connection.rollback()
+        
+
+    def delete_property(self, address:str):
+        self.cursor.execute(
+            "DELETE description, property, property_dealer FROM description INNER JOIN property INNER JOIN property_dealer WHERE address = %s;", (address,)
+        )
+
+    def get_property_locality(self,input):
+        self.cursor.execute("SELECT * from property natural join locality natural join description where locality.name=%s;",(input,))
+        return(self.cursor.fetchall())
+    
+    def get_property_size(self,input1):
+        self.cursor.execute("SELECT * from property natural join locality natural join description where property.size=%s;",(input1,))
+        return(self.cursor.fetchall())
+    
+    def get_property_bed(self,input2):
+        self.cursor.execute("SELECT * from property natural join locality natural join description where description.bedroom=%s;",(input2,))
+        return(self.cursor.fetchall())
+    
     def get_property_all(self):
         self.cursor.execute("SELECT * from property natural join locality natural join description")
         return(self.cursor.fetchall())
-        

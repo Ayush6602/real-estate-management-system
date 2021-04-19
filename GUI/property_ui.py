@@ -3,7 +3,8 @@ from GUI.db_connection import DBConnection
 from PIL.ImageTk import PhotoImage
 from PIL import Image
 from urllib.request import Request, urlopen
-
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
 
 class PropertyUi(tk.Canvas):
     def __init__(self, master: tk.Tk, db_connection: DBConnection, username: str, property_id: int) -> None:
