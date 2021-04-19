@@ -11,7 +11,7 @@ class AdminUi(tk.Canvas):
         self.master = master
         self.command_var = tk.StringVar(value='SQL Command')
         self.db_connection = db_connection
-        self.admin_bg_img = Image.open('C:\\Users\\Almas\\Documents\\Visual Studio 2019\\Code\\real-estate-management-system\\images\\admin_bg.jpg')
+        self.admin_bg_img = Image.open('images/admin_bg.jpg')
         self.admin_bg_pimg = PhotoImage(self.admin_bg_img)
         self.title_text = 'ADMIN'
         self.pack(expand=True, fill='both')
