@@ -108,14 +108,19 @@ class DBConnection:
         self.cursor.execute("SELECT bedroom from description;")
         return [result[0] for result in self.cursor.fetchall()]
         
-    def outputlocality(self,input):
+    def get_property_locality(self,input):
         self.cursor.execute("SELECT * from property natural join locality natural join description where locality.name=%s;",(input,))
         return(self.cursor.fetchall())
     
-    def outputsize(self,input1):
+    def get_property_size(self,input1):
         self.cursor.execute("SELECT * from property natural join locality natural join description where property.size=%s;",(input1,))
         return(self.cursor.fetchall())
     
-    def outputbed(self,input2):
+    def get_property_bed(self,input2):
         self.cursor.execute("SELECT * from property natural join locality natural join description where description.bedroom=%s;",(input2,))
         return(self.cursor.fetchall())
+    
+    def get_property_all(self):
+        self.cursor.execute("SELECT * from property natural join locality natural join description")
+        return(self.cursor.fetchall())
+        
