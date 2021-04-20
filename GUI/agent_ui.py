@@ -5,6 +5,7 @@ import tkinter as tk
 from PIL.ImageTk import PhotoImage
 from PIL import Image
 from tkinter import ttk
+from tkinter import messagebox
 
 
 class AgentUi(tk.Canvas):
@@ -90,13 +91,12 @@ class AgentUi(tk.Canvas):
     def show_property(self, event):
         item = self.property_tree.focus()
         selected = self.property_tree.item(item)
-        # print(selected['values'])
-        # print(item)
+        
         selected_id = self.db_connection.get_property_id(selected['values'][0])
         
         property_window = tk.Toplevel(self)
         property_window.geometry("1280x720")
-        PropertyUi(property_window, self.db_connection, "xyz", selected_id)
+        PropertyUi(property_window, self.db_connection, None, selected_id)
 
 
     def add_property(self)->None:
@@ -111,7 +111,7 @@ class AgentUi(tk.Canvas):
         selected = self.property_tree.item(item)
         # print(selected['values'][0])
         if len(selected['values']) == 0:
-            print("No property selected")
+            messagebox.showerror("Error", "No Property Selected")
             return
         address = selected['values'][0]
 
@@ -125,12 +125,10 @@ class AgentUi(tk.Canvas):
         selected = self.property_tree.item(item)
         # print(selected['values'][0])
         if len(selected['values']) == 0:
-            print("No property selected")
+            messagebox.showerror("Error", "No Property Selected")
             return
         address = selected['values'][0]
         self.db_connection.delete_property(address)
 
         item = self.property_tree.selection()[0]
         self.property_tree.delete(item)
-        
-        # print(address)

@@ -1,7 +1,7 @@
 import mysql.connector as mysql
 from mysql.connector.cursor import MySQLCursor
-# from prettytable import from_db_cursor
-
+from prettytable import from_db_cursor
+from tkinter import messagebox
 
 class DBConnection:
 
@@ -129,11 +129,13 @@ class DBConnection:
                 "INSERT INTO description VALUES (%s, %s, %s, %s, %s, %s, %s);", (kwargs['description_id'], kwargs['description_type'], kwargs['description_status'], kwargs['description_bedroom'], kwargs['description_bathroom'], kwargs['description_kitchen'], kwargs['description_hall'])
             )
             self.cursor.execute("INSERT INTO property_dealer VALUES (%s, %s);", (kwargs['description_id'], kwargs['dealer']))
+            messagebox.showinfo("SUCCESS", "Property has been added successfully")
             print("done")
             self.connection.commit()
 
         except mysql.Error as error:
-            print("Failed to update record to database rollback: {}".format(error))
+            messagebox.showerror("Error", "Failed to update record to database rollback: {}".format(error))
+            # print("Failed to update record to database rollback: {}".format(error))
             self.connection.rollback()
 
     def modify_property(self, **kwargs) ->None:
@@ -144,11 +146,13 @@ class DBConnection:
             self.cursor.execute(
                 "UPDATE description SET type=%s, status=%s, bedroom=%s, bathroom=%s, kitchen=%s, hall=%s WHERE id = %s;", (kwargs['description_type'], kwargs['description_status'], kwargs['description_bedroom'], kwargs['description_bathroom'], kwargs['description_kitchen'], kwargs['description_hall'], kwargs['description_id'])
             )
+            messagebox.showinfo("SUCCESS", "Property has been modified successfully")
             print("done")
             self.connection.commit()
         
         except mysql.Error as error:
-            print("Failed to update record to database rollback: {}".format(error))
+            messagebox.showerror("Error", "Failed to update record to database rollback: {}".format(error))
+            # print("Failed to update record to database rollback: {}".format(error))
             self.connection.rollback()
         
 
@@ -162,6 +166,10 @@ class DBConnection:
         except mysql.Error as error:
             print("Failed to update record to database rollback: {}".format(error))
             self.connection.rollback()
+
+    def get_max_id(self, username:str) -> int:
+        self.cursor.execute("select max(id) from property;")
+        return self.cursor.fetchone()[0]
 
     def get_property_locality(self,input):
         self.cursor.execute("SELECT * from property natural join locality natural join description where locality.name=%s;",(input,))
