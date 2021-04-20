@@ -1,8 +1,6 @@
 from GUI.login_ui import LoginUi
-from GUI.property_ui import PropertyUi
 from GUI.db_connection import DBConnection
 import tkinter as tk
-from tkinter import ttk
 
 
 def main() -> None:
