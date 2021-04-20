@@ -130,12 +130,10 @@ class DBConnection:
             )
             self.cursor.execute("INSERT INTO property_dealer VALUES (%s, %s);", (kwargs['description_id'], kwargs['dealer']))
             messagebox.showinfo("SUCCESS", "Property has been added successfully")
-            print("done")
             self.connection.commit()
 
         except mysql.Error as error:
             messagebox.showerror("Error", "Failed to update record to database rollback: {}".format(error))
-            # print("Failed to update record to database rollback: {}".format(error))
             self.connection.rollback()
 
     def modify_property(self, **kwargs) ->None:
@@ -147,12 +145,10 @@ class DBConnection:
                 "UPDATE description SET type=%s, status=%s, bedroom=%s, bathroom=%s, kitchen=%s, hall=%s WHERE id = %s;", (kwargs['description_type'], kwargs['description_status'], kwargs['description_bedroom'], kwargs['description_bathroom'], kwargs['description_kitchen'], kwargs['description_hall'], kwargs['description_id'])
             )
             messagebox.showinfo("SUCCESS", "Property has been modified successfully")
-            print("done")
             self.connection.commit()
         
         except mysql.Error as error:
             messagebox.showerror("Error", "Failed to update record to database rollback: {}".format(error))
-            # print("Failed to update record to database rollback: {}".format(error))
             self.connection.rollback()
         
 

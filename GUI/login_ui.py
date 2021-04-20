@@ -5,7 +5,7 @@ from GUI.search_ui import SearchUi
 import tkinter as tk
 from PIL.ImageTk import PhotoImage
 from PIL import Image
-
+from tkinter import messagebox
 
 class LoginUi(tk.Canvas):
     def __init__(self, master: tk.Tk, db_connection: DBConnection) -> None:
@@ -93,5 +93,5 @@ class LoginUi(tk.Canvas):
             self.destroy()
             SearchUi(self.master, self.db_connection)
         else:
-            self.title_text = 'Unknown User'
+            messagebox.showerror("Error", "Unknown User")
         self.render()
