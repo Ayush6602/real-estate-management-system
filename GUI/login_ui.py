@@ -5,7 +5,7 @@ from GUI.search_ui import SearchUi
 import tkinter as tk
 from PIL.ImageTk import PhotoImage
 from PIL import Image
-
+from tkinter import messagebox
 
 class LoginUi(tk.Canvas):
     def __init__(self, master: tk.Tk, db_connection: DBConnection) -> None:
@@ -13,7 +13,7 @@ class LoginUi(tk.Canvas):
         self.master = master
         self.configure(highlightthickness=0)
         self.db_connection = db_connection
-        self.login_bg_img = Image.open('images/login_bg.jpg')
+        self.login_bg_img = Image.open('C:\\Users\\Almas\\Documents\\Visual Studio 2019\\Code\\real-estate-management-system\\images\\login_bg.jpg')
         self.login_bg_pimg = PhotoImage(self.login_bg_img)
         self.username_var = tk.StringVar(self, 'Username')
         self.password_var = tk.StringVar(self, 'Password')
@@ -93,5 +93,5 @@ class LoginUi(tk.Canvas):
             self.destroy()
             SearchUi(self.master, self.db_connection)
         else:
-            self.title_text = 'Unknown User'
+            messagebox.showerror("Error", "Unknown User")
         self.render()
