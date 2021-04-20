@@ -32,20 +32,17 @@ class AddModifyProperty(tk.Canvas):
     def render(self, event: tk.Event = None) -> None:
         if not self.winfo_exists():
             return
-        # if event is None:
         height = self.winfo_height()
         width = self.winfo_width()
-        # else:
-            # height = event.height
-            # width = event.width
+        
         self.delete('all')
          # set background
         self.agent_bg_pimg = PhotoImage(self.agent_bg_img.resize((width, height), Image.ANTIALIAS))
         self.create_image(0, 0, anchor='nw', image=self.agent_bg_pimg)
 
         self.create_text(10, 10, text="Enter property type:", anchor = "nw", font=('arial', 20, 'bold'), fill="yellow")
-        type = tk.Entry(self, textvariable=self.description_type)
-        self.create_window(320, 10, anchor="nw", window = type)
+        type_entry = tk.Entry(self, textvariable=self.description_type)
+        self.create_window(320, 10, anchor="nw", window = type_entry)
 
         self.create_text(10, 50, text="Enter property status:", anchor = "nw", font=('arial', 20, 'bold'), fill="yellow")
         status = tk.Entry(self, textvariable=self.description_status)
