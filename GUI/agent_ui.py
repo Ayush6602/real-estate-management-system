@@ -82,13 +82,13 @@ class AgentUi(tk.Canvas):
                     parent='', index='end', iid=i, values=transactions[i])
 
         add = tk.Button(self, text='Add Property', command=self.add_property, font=(
-            "calibri", 20), activebackground="blue")
+            "calibri", 20), activebackground="green")
         self.create_window(width//4, 500, anchor="center", window=add)
         modify = tk.Button(self, text='Modify Property', command=self.modify_property, font=(
             "calibri", 20), activebackground="yellow")
         self.create_window(2*width//4, 500, anchor="center", window=modify)
         delete = tk.Button(self, text='Delete Property', command=self.delete_property, font=(
-            "calibri", 20), activebackground="pink")
+            "calibri", 20), activebackground="red")
         self.create_window(3*width//4, 500, anchor="center", window=delete)
 
     def show_property(self, event):
@@ -97,11 +97,13 @@ class AgentUi(tk.Canvas):
 
         selected_id = self.db_connection.get_property_id(selected['values'][0])
 
-        property_window = tk.Toplevel(self, width=1280, height=720)
+        property_window = tk.Toplevel(self)
+        property_window.geometry('1280x720')
         PropertyUi(property_window, self.db_connection, None, selected_id)
 
     def add_property(self) -> None:
-        add_modify = tk.Toplevel(self, width=1280, height=720)
+        add_modify = tk.Toplevel(self)
+        add_modify.geometry('1280x720')
         AddModifyProperty(add_modify, self.db_connection, None, self.username)
 
     def modify_property(self) -> None:
@@ -111,7 +113,8 @@ class AgentUi(tk.Canvas):
             messagebox.showerror("Error", "No Property Selected")
             return
         address = selected['values'][0]
-        add_modify = tk.Toplevel(self, width=1280, height=720)
+        add_modify = tk.Toplevel(self)
+        add_modify.geometry('1280x720')
         AddModifyProperty(add_modify, self.db_connection,
                           self.db_connection.get_property_id(address), self.username)
 

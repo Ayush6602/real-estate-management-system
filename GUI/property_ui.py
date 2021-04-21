@@ -4,6 +4,7 @@ from PIL.ImageTk import PhotoImage
 from PIL import Image
 from urllib.request import Request, urlopen
 import ssl
+
 ssl._create_default_https_context = ssl._create_unverified_context
 
 
@@ -18,7 +19,7 @@ class PropertyUi(tk.Canvas):
         self.property_bg_img = Image.open('images/property_bg.jpg')
         self.property_bg_pimg = PhotoImage(self.property_bg_img)
         self.property_img = Image.open(
-            urlopen(Request(self.property_details['image_link'], headers={'User-Agent': 'Mozilla/5.0'})))
+            urlopen(Request(self.property_details['Image Link'], headers={'User-Agent': 'Mozilla/5.0'})))
         self.property_details.pop('Image Link')
         self.property_details.pop('locality_id')
         self.property_details.pop('id')
