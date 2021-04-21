@@ -10,19 +10,20 @@ class SearchUi(tk.Canvas):
     def __init__(self, master, db_connection: DBConnection) -> None:
         super().__init__(master)
         self.master = master
-        self.login_bg_img = Image.open('images/search.jpg')
+        self.login_bg_img = Image.open('images/search_bg.jpg')
         self.login_bg_pimg = PhotoImage(self.login_bg_img)
         self.db_connection = db_connection
-        self.bathroom_select = tk.Entry(self)
+        vcmd = (self.register(self.callback))
+        self.bathroom_select = tk.Entry(self, validate='all', validatecommand=(vcmd,'%P'))
         self.locality_select = tk.Entry(self)
-        self.bedroom_select = tk.Entry(self)
-        self.kitchen_select = tk.Entry(self)
-        self.hall_select = tk.Entry(self)
-        self.price_select = tk.Entry(self)
+        self.bedroom_select = tk.Entry(self, validate='all', validatecommand=(vcmd,'%P'))
+        self.kitchen_select = tk.Entry(self, validate='all', validatecommand=(vcmd,'%P'))
+        self.hall_select = tk.Entry(self, validate='all', validatecommand=(vcmd,'%P'))
+        self.price_select = tk.Entry(self, validate='all', validatecommand=(vcmd,'%P'))
         self.status_select = tk.Entry(self)
-        self.rent_select = tk.Entry(self)
+        self.rent_select = tk.Entry(self, validate='all', validatecommand=(vcmd,'%P'))
         self.type_select = tk.Entry(self)
-        self.size_select = tk.Entry(self)
+        self.size_select = tk.Entry(self, validate='all', validatecommand=(vcmd,'%P'))
         self.property_tree = ttk.Treeview(self)
         self.pack(fill=tk.BOTH, expand=True)
         self.bind('<Configure>', self.render)
@@ -41,72 +42,72 @@ class SearchUi(tk.Canvas):
         # title text
         self.create_text(width/2, 5, text="Search By", anchor="n",
                          font=f'ariel {min(width, height) // 30} bold', fill="white")
-        # size entry
-        self.create_text(width//2 + 170, 220, text="Size:",
-                         anchor="nw", font=('arial', 20, 'bold'), fill="white")
-        self.create_window(width//2 + 400, 240, window=self.size_select)
-        self.size_select.bind('<Return>', self.make_treeview)
         # locality combobox
         locality = self.db_connection.get_locality()
         locality.append("All")
-        self.create_text(10, 50, text="Locality:", anchor="nw",
+        self.create_text(width//7, 2*height//20, text="Locality:", anchor="nw",
                          font=('arial', 20, 'bold'), fill="white")
         self.local_select = ttk.Combobox(self, width=30, values=locality)
-        self.create_window(220, 50, anchor="nw", window=self.local_select)
+        self.create_window(2*width//7, 2*height//20 + 5, anchor="nw", window=self.local_select)
         self.local_select.bind("<<ComboboxSelected>>", self.make_treeview)
         self.local_select.current(len(locality) - 1)
-        # bedroom entry
-        self.create_text(10, 90, text="Bedroom:", anchor="nw",
-                         font=('arial', 20, 'bold'), fill="white")
-        self.create_window(280, 110, window=self.bedroom_select)
-        self.bedroom_select.bind('<Return>', self.make_treeview)
-        # bathroom entry
-        self.create_text(10, 130, text="Bathroom:", anchor="nw",
-                         font=('arial', 20, 'bold'), fill="white")
-        self.create_window(280, 150, window=self.bathroom_select)
-        self.bathroom_select.bind('<Return>', self.make_treeview)
-        # kitchen entry
-        self.create_text(10, 170, text="Kitchen:", anchor="nw",
-                         font=('arial', 20, 'bold'), fill="white")
-        self.create_window(280, 190, window=self.kitchen_select)
-        self.kitchen_select.bind('<Return>', self.make_treeview)
-        # hall entry
-        self.create_text(10, 210, text="Halls:", anchor="nw",
-                         font=('arial', 20, 'bold'), fill="white")
-        self.create_window(280, 230, window=self.hall_select)
-        self.hall_select.bind('<Return>', self.make_treeview)
-        # price entry
-        self.create_text(10, 250, text="Price:", anchor="nw",
-                         font=('arial', 20, 'bold'), fill="white")
-        self.create_window(280, 270, window=self.price_select)
-        self.price_select.bind('<Return>', self.make_treeview)
-        # rent entry
-        self.create_text(width//2 + 170, 90, text="Rent:",
-                         anchor="nw", font=('arial', 20, 'bold'), fill="white")
-        self.create_window(width//2+400, 110, window=self.rent_select)
-        self.rent_select.bind('<Return>', self.make_treeview)
         # type combo box
         type = self.db_connection.get_type()
         type.append("All")
-        self.create_text(width//2 + 170, 150, text="Type:",
+        self.create_text(width//7, 3.5*height//20, text="Type:",
                          anchor="nw", font=('arial', 20, 'bold'), fill="white")
         self.type_select = ttk.Combobox(self, width=28, values=type)
-        self.create_window(width//2 + 300, 150,
+        self.create_window(2*width//7, 3.5*height//20 + 5,
                            anchor="nw", window=self.type_select)
         self.type_select.bind("<<ComboboxSelected>>", self.make_treeview)
         self.type_select.current(len(type) - 1)
         # status combobox
         status = self.db_connection.get_status()
         status.append("All")
-        self.create_text(width//2 + 170, 190, text="Status:",
+        self.create_text(width//7, 5*height//20, text="Status:",
                          anchor="nw", font=('arial', 20, 'bold'), fill="white")
         self.status_select = ttk.Combobox(self, width=28, values=status)
-        self.create_window(width//2 + 300, 190,
+        self.create_window(2*width//7, 5*height//20 + 5,
                            anchor="nw", window=self.status_select)
         self.status_select.bind("<<ComboboxSelected>>", self.make_treeview)
         self.status_select.current(len(status) - 1)
+        # price entry
+        self.create_text(width//7, 6.5*height//20 , text="Price:", anchor="nw",
+                         font=('arial', 20, 'bold'), fill="white")
+        self.create_window(2*width//7, 6.5*height//20 + 15, window=self.price_select)
+        self.price_select.bind('<Return>', self.make_treeview)
+        # rent entry
+        self.create_text(width//7, 8*height//20 , text="Rent:",
+                         anchor="nw", font=('arial', 20, 'bold'), fill="white")
+        self.create_window(2*width//7, 8*height//20 + 15, window=self.rent_select)
+        self.rent_select.bind('<Return>', self.make_treeview)
+        # bedroom entry
+        self.create_text(5*width//7 - 35, 2*height//20, text="Bedroom:", anchor="nw",
+                         font=('arial', 20, 'bold'), fill="white")
+        self.create_window(6*width//7 , 2*height//20 + 15, window=self.bedroom_select)
+        self.bedroom_select.bind('<Return>', self.make_treeview)
+        # bathroom entry
+        self.create_text(5*width//7 - 35, 3.5*height//20, text="Bathroom:", anchor="nw",
+                         font=('arial', 20, 'bold'), fill="white")
+        self.create_window(6*width//7 , 3.5*height//20 + 15, window=self.bathroom_select)
+        self.bathroom_select.bind('<Return>', self.make_treeview)
+        # kitchen entry
+        self.create_text(5*width//7 - 35, 5*height//20, text="Kitchen:", anchor="nw",
+                         font=('arial', 20, 'bold'), fill="white")
+        self.create_window(6*width//7 , 5*height//20 + 15, window=self.kitchen_select)
+        self.kitchen_select.bind('<Return>', self.make_treeview)
+        # hall entry
+        self.create_text(5*width//7 - 35, 6.5*height//20, text="Halls:", anchor="nw",
+                         font=('arial', 20, 'bold'), fill="white")
+        self.create_window(6*width//7 , 6.5*height//20 + 15, window=self.hall_select)
+        self.hall_select.bind('<Return>', self.make_treeview)
+        # size entry
+        self.create_text(5*width//7 - 35, 8*height//20, text="Size:",
+                         anchor="nw", font=('arial', 20, 'bold'), fill="white")
+        self.create_window(6*width//7 , 8*height//20 + 15, window=self.size_select)
+        self.size_select.bind('<Return>', self.make_treeview)
         # result title
-        self.create_text(width//2, 300, text="Results", anchor="center",
+        self.create_text(width//2, 10*height//20, text="Results", anchor="center",
                          font=f'ariel {min(width, height) // 30} bold', fill="white")
         self.make_treeview()
 
@@ -148,7 +149,7 @@ class SearchUi(tk.Canvas):
         self.property_tree = ttk.Treeview(self)
         height = self.winfo_height()
         width = self.winfo_width()
-        self.create_window(10, 350, anchor="nw",
+        self.create_window(10, 12*height//20, anchor="nw",
                            width=width, window=self.property_tree)
         self.property_tree['columns'] = (
             'Address', 'Size', 'Price', 'Rent', 'Name', 'Type', 'Status', 'Bedroom', 'Bathroom', 'Kitchen', 'Hall')
@@ -191,3 +192,9 @@ class SearchUi(tk.Canvas):
         property_window = tk.Toplevel(self)
         property_window.geometry('1280x720')
         PropertyUi(property_window, self.db_connection, "xyz", selected_id)
+
+    def callback(self, P):
+        if str.isdigit(P) or P == "":
+            return True
+        else:
+            return False
