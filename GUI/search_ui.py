@@ -10,7 +10,7 @@ class SearchUi(tk.Canvas):
     def __init__(self, master, db_connection: DBConnection) -> None:
         super().__init__(master)
         self.master = master
-        self.login_bg_img = Image.open('images/search.jpg')
+        self.login_bg_img = Image.open('images/search_bg.jpg')
         self.login_bg_pimg = PhotoImage(self.login_bg_img)
         self.db_connection = db_connection
         self.bathroom_select = tk.Entry(self)
@@ -190,4 +190,4 @@ class SearchUi(tk.Canvas):
         selected_id = self.db_connection.get_property_id(selected['values'][0])
         property_window = tk.Toplevel(self)
         property_window.geometry('1280x720')
-        PropertyUi(property_window, self.db_connection, "xyz", selected_id)
+        PropertyUi(property_window, self.db_connection, selected_id)

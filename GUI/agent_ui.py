@@ -99,7 +99,7 @@ class AgentUi(tk.Canvas):
 
         property_window = tk.Toplevel(self)
         property_window.geometry('1280x720')
-        PropertyUi(property_window, self.db_connection, None, selected_id)
+        PropertyUi(property_window, self.db_connection, selected_id)
 
     def add_property(self) -> None:
         add_modify = tk.Toplevel(self)
