@@ -1,18 +1,16 @@
-from GUI.agent_ui import AgentUi
 from GUI.db_connection import DBConnection
-# from GUI.admin_ui import AdminUi
 from GUI.search_ui import SearchUi
 import tkinter as tk
-from tkinter import ttk
 from PIL.ImageTk import PhotoImage
 from PIL import Image
 
 class SignupUi(tk.Canvas):
-    def __init__(self, master: tk.Tk, db_connection: DBConnection) -> None:
+    def __init__(self, master: tk.Tk, db_connection: DBConnection, login_ui_cls) -> None:
         super().__init__(master)
         self.master = master
         self.configure(highlightthickness=0)
         self.db_connection = db_connection
+        self.login_ui_cls = login_ui_cls
         self.login_bg_img = Image.open('images/login_bg.jpg')
         self.login_bg_pimg = PhotoImage(self.login_bg_img)
         self.username_var = tk.StringVar(self, 'Username')
@@ -112,6 +110,6 @@ class SignupUi(tk.Canvas):
         sucess_bool = self.db_connection.add_client(self.username_var.get(), self.password_var.get(), self.name_var.get(), self.contact_var.get(), self.mail_var.get())
         if sucess_bool:
             self.destroy()
-            SearchUi(self.master, self.db_connection)
+            SearchUi(self.master, self.db_connection, self.login_ui_cls)
         else:
             self.render()

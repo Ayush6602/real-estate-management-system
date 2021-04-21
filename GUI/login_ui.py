@@ -106,4 +106,4 @@ class LoginUi(tk.Canvas):
 
     def signup(self, event: tk.Event = None) -> None:
         self.destroy()
-        SignupUi(self.master, self.db_connection)
+        SignupUi(self.master, self.db_connection, LoginUi)
