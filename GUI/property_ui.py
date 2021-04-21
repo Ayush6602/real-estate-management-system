@@ -6,6 +6,7 @@ from urllib.request import Request, urlopen
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 
+
 class PropertyUi(tk.Canvas):
     def __init__(self, master: tk.Tk, db_connection: DBConnection, username: str, property_id: int) -> None:
         super().__init__(master)
@@ -18,7 +19,7 @@ class PropertyUi(tk.Canvas):
         self.property_bg_pimg = PhotoImage(self.property_bg_img)
         self.property_img = Image.open(
             urlopen(Request(self.property_details['image_link'], headers={'User-Agent': 'Mozilla/5.0'})))
-        self.property_details.pop('image_link')
+        self.property_details.pop('Image Link')
         self.property_details.pop('locality_id')
         self.property_details.pop('id')
         self.property_pimg = PhotoImage(self.property_img)
