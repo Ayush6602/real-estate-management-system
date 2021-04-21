@@ -1,5 +1,7 @@
 import tkinter as tk
+# from tkinter import ttk
 from GUI.db_connection import DBConnection
+from GUI.dealer_ui import DealerUi
 from PIL.ImageTk import PhotoImage
 from PIL import Image
 from urllib.request import Request, urlopen
@@ -9,10 +11,10 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 
 class PropertyUi(tk.Canvas):
-    def __init__(self, master: tk.Tk, db_connection: DBConnection, username: str, property_id: int) -> None:
+    def __init__(self, master: tk.Tk, db_connection: DBConnection, property_id: int) -> None:
         super().__init__(master)
         self.master = master
-        self.username = username
+        self.db_connection = db_connection
         self.property_id = property_id
         self.property_details = db_connection.get_property_details(
             self.property_id)
@@ -61,16 +63,13 @@ class PropertyUi(tk.Canvas):
                              anchor='sw', font=txt_fnt)
             i += 1
         # set buy button
-        buy_btn_x = 2 * width / 16
-        buy_btn_y = 2 * height / 3
-        buy_btn_font = f'arial {min(width, height) // 40}'
-        buy_btn = tk.Button(self, background='green',
-                            text='Buy', borderwidth=0, activebackground='yellow', font=buy_btn_font)
-        self.create_window(buy_btn_x, buy_btn_y, window=buy_btn, anchor='nw')
-        # set rent button
-        rnt_btn_x = 7 * width / 16
-        rnt_btn_y = 2 * height / 3
-        rnt_btn_font = f'arial {min(width, height) // 40}'
-        rnt_btn = tk.Button(self, background='yellow',
-                            text='Rent', borderwidth=0, activebackground='green', font=rnt_btn_font)
-        self.create_window(rnt_btn_x, rnt_btn_y, window=rnt_btn, anchor='nw')
+        btn_x = 5*width // 16
+        btn_y = 2 * height / 3
+        btn_font = f'arial {min(width, height) // 40}'
+        btn = tk.Button(self, background='green', text='Buy/Rent', command = self.show_dealer, borderwidth=0, activebackground='yellow', font=btn_font)
+        self.create_window(btn_x, btn_y, window=btn)
+
+    def show_dealer(self, event: tk.Event = None) -> None:
+        dealer_window = tk.Toplevel(self)
+        dealer_window.geometry('1280x720')
+        DealerUi(dealer_window, self.db_connection, self.property_id)

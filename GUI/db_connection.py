@@ -49,7 +49,7 @@ class DBConnection:
         )
         return self.cursor
 
-    def get_property_details(self, property_id: int) -> dict[str, str]:
+    def get_property_details(self, property_id: int) -> dict:
         self.cursor.execute(
             'select * from property natural join description natural join locality where id = %s', (property_id,))
         result = self.cursor.fetchone()
@@ -258,3 +258,7 @@ class DBConnection:
         self.cursor.execute(
             "SELECT * from property natural join locality natural join description")
         return(self.cursor.fetchall())
+
+    def get_dealers(self, property_id:int):
+        self.cursor.execute("SELECT name, contact_no, mail FROM property_dealer NATURAL JOIN dealer WHERE id = %s", (property_id,))
+        return self.cursor.fetchall()
