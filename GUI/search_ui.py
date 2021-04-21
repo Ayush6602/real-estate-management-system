@@ -10,7 +10,7 @@ class SearchUi(tk.Canvas):
     def __init__(self, master, db_connection: DBConnection) -> None:
         super().__init__(master)
         self.master = master
-        self.login_bg_img = Image.open('images/search.jpg')
+        self.login_bg_img = Image.open('images/search_bg.jpg')
         self.login_bg_pimg = PhotoImage(self.login_bg_img)
         self.db_connection = db_connection
         self.bathroom_select = tk.Entry(self)

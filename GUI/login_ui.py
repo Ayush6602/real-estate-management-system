@@ -8,6 +8,7 @@ from PIL.ImageTk import PhotoImage
 from PIL import Image
 from tkinter import messagebox
 
+
 class LoginUi(tk.Canvas):
     def __init__(self, master: tk.Tk, db_connection: DBConnection) -> None:
         super().__init__(master)
@@ -66,10 +67,14 @@ class LoginUi(tk.Canvas):
         lgn_btn_font = f'ariel {min(width, height) // 50}'
         lgn_btn_x = width / 2
         lgn_btn_y = 3 * height / 5
-        login_btn = tk.Button(self, text='Login', borderwidth=0, background='green', font=lgn_btn_font, command=self.login, activebackground='yellow')
-        signup_btn = tk.Button(self, text='Sign Up', borderwidth=0, background='green', font=lgn_btn_font, command=self.signup, activebackground='yellow')
-        self.create_window(int(lgn_btn_x - 10), int(lgn_btn_y), anchor = "e", window=login_btn)
-        self.create_window(int(lgn_btn_x + 10), int(lgn_btn_y), anchor = "w", window=signup_btn)
+        login_btn = tk.Button(self, text='Login', borderwidth=0, background='green',
+                              font=lgn_btn_font, command=self.login, activebackground='yellow')
+        signup_btn = tk.Button(self, text='Sign Up', borderwidth=0, background='green',
+                               font=lgn_btn_font, command=self.signup, activebackground='yellow')
+        self.create_window(int(lgn_btn_x - 10), int(lgn_btn_y),
+                           anchor="e", window=login_btn)
+        self.create_window(int(lgn_btn_x + 10), int(lgn_btn_y),
+                           anchor="w", window=signup_btn)
 
     def clear_username_entry(self, event: tk.Event) -> None:
         if self.username_var.get() == 'Username':
@@ -86,14 +91,15 @@ class LoginUi(tk.Canvas):
             self.username_var.get(), self.password_var.get())
         if user_type == DBConnection.ADMIN:
             self.destroy()
-            AdminUi(self.master, self.db_connection).pack(expand=True)
+            AdminUi(self.master, self.db_connection, LoginUi)
         elif user_type == DBConnection.DEALER:
             self.destroy()
-            AgentUi(self.master, self.db_connection, self.username_var.get())
+            AgentUi(self.master, self.db_connection,
+                    self.username_var.get(), LoginUi)
         elif user_type == DBConnection.CLIENT:
             self.title_text = 'Welcome Client'
             self.destroy()
-            SearchUi(self.master, self.db_connection)
+            SearchUi(self.master, self.db_connection, LoginUi)
         else:
             messagebox.showerror("Error", "Unknown User")
         self.render()

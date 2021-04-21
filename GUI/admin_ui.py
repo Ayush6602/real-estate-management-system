@@ -6,11 +6,12 @@ from prettytable import from_db_cursor
 
 
 class AdminUi(tk.Canvas):
-    def __init__(self, master, db_connection: DBConnection) -> None:
+    def __init__(self, master, db_connection: DBConnection, login_ui_cls) -> None:
         super().__init__(master)
         self.master = master
         self.command_var = tk.StringVar(value='SQL Command')
         self.db_connection = db_connection
+        self.login_ui_cls = login_ui_cls
         self.admin_bg_img = Image.open('images/admin_bg.jpg')
         self.admin_bg_pimg = PhotoImage(self.admin_bg_img)
         self.title_text = 'ADMIN'
@@ -44,27 +45,37 @@ class AdminUi(tk.Canvas):
             self, height=height//100, width=width//20, font=cmd_ent_font)
         self.create_window(int(cmd_ent_x), int(
             cmd_ent_y), window=self.command_text)
+        self.command_text.bind('<Control-Return>', self.submit)
+        btn_font = f'ariel {min(width, height) // 50}'
         # set submit button
-        sbmt_btn_font = f'ariel {min(width, height) // 50}'
         sbmt_btn_x = width / 2
         sbmt_btn_y = 3 * height / 5
-        submit_btn = tk.Button(self, text='Submit', borderwidth=0, background='green',
-                               font=sbmt_btn_font, command=self.submit, activebackground='yellow')
+        submit_btn = tk.Button(self, text='Submit', background='green',
+                               font=btn_font, command=self.submit, activebackground='yellow')
         self.create_window(int(sbmt_btn_x), int(sbmt_btn_y), window=submit_btn)
         # set rental report button
-        rent_btn_font = f'ariel {min(width, height) // 50}'
-        rent_btn_x = width / 3
+        rent_btn_x = width / 4
         rent_btn_y = 4 * height / 5
-        rental_btn = tk.Button(self, text='Rental Report', borderwidth=0, background='red',
-                               font=rent_btn_font, command=self.rental_report, activebackground='orange')
+        rental_btn = tk.Button(self, text='Rental Report', background='yellow',
+                               font=btn_font, command=self.rental_report, activebackground='orange')
         self.create_window(int(rent_btn_x), int(rent_btn_y), window=rental_btn)
         # set sales report button
-        sale_btn_font = f'ariel {min(width, height) // 50}'
-        sale_btn_x = 2 * width / 3
+        sale_btn_x = 2 * width / 4
         sale_btn_y = 4 * height / 5
-        sales_btn = tk.Button(self, text='Sales Report', borderwidth=0, background='red',
-                              font=sale_btn_font, command=self.sales_report, activebackground='orange')
+        sales_btn = tk.Button(self, text='Sales Report', background='yellow',
+                              font=btn_font, command=self.sales_report, activebackground='orange')
         self.create_window(int(sale_btn_x), int(sale_btn_y), window=sales_btn)
+        # set logout button
+        logout_btn_x = 3 * width / 4
+        logout_btn_y = 4 * height / 5
+        logout_btn = tk.Button(self, text='Logout', background='red',
+                               font=btn_font, command=self.logout, activebackground='orange')
+        self.create_window(int(logout_btn_x), int(
+            logout_btn_y), window=logout_btn)
+
+    def logout(self) -> None:
+        self.destroy()
+        self.login_ui_cls(self.master, self.db_connection)
 
     def sales_report(self):
         self.result = from_db_cursor(self.db_connection.get_sales_report())
@@ -76,7 +87,6 @@ class AdminUi(tk.Canvas):
 
     def submit(self, event: tk.Event = None) -> None:
         query = self.command_text.get('1.0', 'end')
-        print(query)
         self.result = from_db_cursor(self.db_connection.command_result(query))
         self.print_result()
         self.db_connection.connection.commit()
