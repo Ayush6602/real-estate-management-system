@@ -78,6 +78,7 @@ class DBConnection:
 
     def get_locality_id(self, locality:str) -> int:
         self.cursor.execute("SELECT locality_id FROM locality WHERE name = %s;", (locality,))
+        print(locality)
         return self.cursor.fetchall()[0][0]
 
     def get_property(self, username:str) -> list:
@@ -116,7 +117,7 @@ class DBConnection:
                 "INSERT INTO property VALUES (%s, %s, %s, %s, %s, %s, %s);", (kwargs['description_id'], kwargs['property_image'], kwargs['property_address'], kwargs['property_size'], kwargs['property_price'], kwargs['property_rent'], kwargs['property_locality'])
             )
             self.cursor.execute(
-                "INSERT INTO description VALUES (%s, %s, %s, %s, %s, %s, %s);", (kwargs['description_id'], kwargs['description_type'], kwargs['description_status'], kwargs['description_bedroom'], kwargs['description_bathroom'], kwargs['description_kitchen'], kwargs['description_hall'])
+                "INSERT INTO description VALUES (%s, %s, %s, %s, %s, %s, %s, %s);", (kwargs['description_id'], kwargs['description_type'], kwargs['description_status'], kwargs['description_bedroom'], kwargs['description_bathroom'], kwargs['description_kitchen'], kwargs['description_hall'], kwargs['summary'])
             )
             self.cursor.execute("INSERT INTO property_dealer VALUES (%s, %s);", (kwargs['description_id'], kwargs['dealer']))
             messagebox.showinfo("SUCCESS", "Property has been added successfully")
@@ -132,7 +133,7 @@ class DBConnection:
                 "UPDATE property SET images=%s, address=%s, size=%s, price=%s, rent=%s, locality_id=%s WHERE id = %s;", (kwargs['property_image'], kwargs['property_address'], kwargs['property_size'], kwargs['property_price'], kwargs['property_rent'], kwargs['property_locality'], kwargs['description_id'])
             )
             self.cursor.execute(
-                "UPDATE description SET type=%s, status=%s, bedroom=%s, bathroom=%s, kitchen=%s, hall=%s WHERE id = %s;", (kwargs['description_type'], kwargs['description_status'], kwargs['description_bedroom'], kwargs['description_bathroom'], kwargs['description_kitchen'], kwargs['description_hall'], kwargs['description_id'])
+                "UPDATE description SET type=%s, status=%s, bedroom=%s, bathroom=%s, kitchen=%s, hall=%s, summary=%s WHERE id = %s;", (kwargs['description_type'], kwargs['description_status'], kwargs['description_bedroom'], kwargs['description_bathroom'], kwargs['description_kitchen'], kwargs['description_hall'], kwargs['summary'], kwargs['description_id'])
             )
             messagebox.showinfo("SUCCESS", "Property has been modified successfully")
             self.connection.commit()
@@ -152,6 +153,17 @@ class DBConnection:
         except mysql.Error as error:
             print("Failed to update record to database rollback: {}".format(error))
             self.connection.rollback()
+
+    def add_client(self, username, password, name, contact, mail) -> bool:
+        try:
+            self.cursor.execute("INSERT INTO client VALUES (%s, %s, %s, %s, %s);", (username, password, name, contact, mail))
+            self.connection.commit()
+            messagebox.showinfo("SUCCESS", "Your client account has been created!")
+            return True
+        except mysql.Error as error:
+            messagebox.showerror("Error", "Failed to update record to database rollback: {}".format(error))
+            self.connection.rollback()
+            return False
 
     def get_max_id(self, username:str) -> int:
         self.cursor.execute("select max(id) from property;")

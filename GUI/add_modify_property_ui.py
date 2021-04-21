@@ -25,6 +25,7 @@ class AddModifyProperty(tk.Canvas):
         self.property_price = tk.StringVar(self)
         self.property_rent = tk.StringVar(self)
         self.property_locality = tk.StringVar(self)
+        self.property_summary = tk.StringVar(self)
 
         self.pack(fill=tk.BOTH, expand=True)
         self.bind('<Configure>', self.render)
@@ -64,6 +65,10 @@ class AddModifyProperty(tk.Canvas):
         hall = tk.Entry(self, textvariable=self.description_hall)
         self.create_window(320, 210, anchor="nw", window = hall)
 
+        self.create_text(10, 250, text="Enter summary:", anchor="nw", font=('arial', 20, 'bold'), fill="yellow")
+        summary = tk.Entry(self, textvariable=self.property_summary)
+        self.create_window(320, 250, width = 2*width//3, anchor = "nw", window = summary)
+
         self.create_text(width//2 + 170, 10, text="Enter image link:", anchor = "nw", font=('arial', 20, 'bold'), fill="yellow")
         image = tk.Entry(self, textvariable=self.property_image)
         self.create_window(width//2 + 400, 10, anchor="nw", window = image)
@@ -89,6 +94,7 @@ class AddModifyProperty(tk.Canvas):
         self.create_window(width//2 + 400, 210, anchor="nw", window = locality)
         localities = self.db_connection.get_locality()
         locality['values'] = (localities)
+        locality.current(0)
 
         if self.id is None:
             btn_text = 'Add Property'
@@ -128,6 +134,7 @@ class AddModifyProperty(tk.Canvas):
             property_price = self.property_price.get(),
             property_rent = self.property_rent.get(),
             property_locality = self.db_connection.get_locality_id(self.property_locality.get()),
+            summary = self.property_summary.get(),
             dealer = self.dealer
         )
         self.master.master.render()
@@ -147,6 +154,7 @@ class AddModifyProperty(tk.Canvas):
             property_price = self.property_price.get(),
             property_rent = self.property_rent.get(),
             property_locality = self.db_connection.get_locality_id(self.property_locality.get()),
+            summary = self.property_summary.get(),
             dealer = self.dealer
         )
         self.master.master.render()
