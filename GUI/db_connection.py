@@ -1,6 +1,6 @@
 import mysql.connector as mysql
 from mysql.connector.cursor import MySQLCursor
-from prettytable import from_db_cursor
+# from prettytable import from_db_cursor
 from tkinter import messagebox
 
 class DBConnection:
@@ -59,7 +59,7 @@ class DBConnection:
             'locality_id': result[0],
             'id': result[1],
             'image_link': result[2],
-            'Locality': result[13],
+            'Locality': result[14],
             'Address': result[3],
             'Price': result[5],
             'Rent': result[6],
@@ -70,6 +70,7 @@ class DBConnection:
             'Kitchens': result[11],
             'Halls': result[12],
             'Size sq.ft.': result[4],
+            'Summary': result[13]
         }
 
     def get_property_id(self, address:str) -> int:

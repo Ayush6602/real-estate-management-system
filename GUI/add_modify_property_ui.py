@@ -115,6 +115,7 @@ class AddModifyProperty(tk.Canvas):
             self.property_rent.set(property_details['Rent'])
             self.property_size.set(property_details['Size sq.ft.'])
             self.property_locality.set(property_details['Locality'])
+            self.property_summary.set(property_details['Summary'])
 
         add = tk.Button(self, text=btn_text, command = btn_cmd, font=("calibri", 20), activebackground="blue")
         self.create_window(width//2, 500, anchor="center", window=add)
