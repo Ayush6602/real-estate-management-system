@@ -41,10 +41,9 @@ class DBConnection:
             self.__init__()
         try:
             self.cursor.execute(query)
-            self.connection.commit()
         except mysql.Error as error:
-            messagebox.showerror("Error", "Incorrect Command: {}".format(error))
-            self.connection.rollback()
+            messagebox.showerror(
+                "Error", "Incorrect Command: {}".format(error))
 
         return self.cursor
 
@@ -93,7 +92,8 @@ class DBConnection:
     def get_property_id(self, address: str) -> int:
         if not self.connection.is_connected():
             self.__init__()
-        self.cursor.execute("SELECT id FROM property WHERE address = %s;", (address,))
+        self.cursor.execute(
+            "SELECT id FROM property WHERE address = %s;", (address,))
         return (self.cursor.fetchall()[0][0])
 
     def get_locality_id(self, locality: str) -> int:
@@ -116,7 +116,7 @@ class DBConnection:
             self.__init__()
         self.cursor.execute(
             "SELECT date, price, rent, client FROM transaction WHERE dealer = %s", (username,))
-        return(self.cursor.fetchall())
+        return self.cursor.fetchall()
 
     def get_locality(self):
         if not self.connection.is_connected():
@@ -127,7 +127,8 @@ class DBConnection:
     def get_type(self):
         if not self.connection.is_connected():
             self.__init__()
-        self.cursor.execute("SELECT distinct type from description;")
+        self.cursor.execute(
+            "SELECT distinct type from description where status != 'sold';")
         return [result[0] for result in self.cursor.fetchall()]
 
     def get_status(self):
@@ -141,70 +142,70 @@ class DBConnection:
             self.__init__()
         self.cursor.execute(
             "SELECT * from property natural join locality natural join description where locality.name=%s;", (input,))
-        return(self.cursor.fetchall())
+        return self.cursor.fetchall()
 
     def get_property_size(self, input1):
         if not self.connection.is_connected():
             self.__init__()
         self.cursor.execute(
             "SELECT * from property natural join locality natural join description where property.size>=%s;", (input1,))
-        return(self.cursor.fetchall())
+        return self.cursor.fetchall()
 
     def get_property_bed(self, input2):
         if not self.connection.is_connected():
             self.__init__()
         self.cursor.execute(
             "SELECT * from property natural join locality natural join description where description.bedroom>=%s;", (input2,))
-        return(self.cursor.fetchall())
+        return self.cursor.fetchall()
 
     def get_property_bathroom(self, input3):
         if not self.connection.is_connected():
             self.__init__()
         self.cursor.execute(
             "SELECT * from property natural join locality natural join description where description.bathroom>=%s;", (input3,))
-        return(self.cursor.fetchall())
+        return self.cursor.fetchall()
 
     def get_property_kitchen(self, input4):
         if not self.connection.is_connected():
             self.__init__()
         self.cursor.execute(
             "SELECT * from property natural join locality natural join description where description.kitchen>=%s;", (input4,))
-        return(self.cursor.fetchall())
+        return self.cursor.fetchall()
 
     def get_property_hall(self, input5):
         if not self.connection.is_connected():
             self.__init__()
         self.cursor.execute(
             "SELECT * from property natural join locality natural join description where description.hall>=%s;", (input5,))
-        return(self.cursor.fetchall())
+        return self.cursor.fetchall()
 
     def get_property_type(self, input6):
         if not self.connection.is_connected():
             self.__init__()
         self.cursor.execute(
             "SELECT * from property natural join locality natural join description where description.type=%s;", (input6,))
-        return(self.cursor.fetchall())
+        return self.cursor.fetchall()
 
     def get_property_rent(self, input7):
         if not self.connection.is_connected():
             self.__init__()
         self.cursor.execute(
             "SELECT * from property natural join locality natural join description where property.rent>=%s;", (input7,))
-        return(self.cursor.fetchall())
+        return self.cursor.fetchall()
 
     def get_property_status(self, input8):
         if not self.connection.is_connected():
             self.__init__()
         self.cursor.execute(
             "SELECT * from property natural join locality natural join description where description.status=%s;", (input8,))
-        return(self.cursor.fetchall())
+        return self.cursor.fetchall()
 
     def get_property_price(self, input10):
         if not self.connection.is_connected():
             self.__init__()
         self.cursor.execute(
             "SELECT * from property natural join locality natural join description where property.price>=%s;", (input10,))
-        return(self.cursor.fetchall())
+        return self.cursor.fetchall()
 
     def add_property(self, **kwargs) -> None:
         if not self.connection.is_connected():
@@ -290,7 +291,7 @@ class DBConnection:
         if not self.connection.is_connected():
             self.__init__()
         self.cursor.execute(
-            "SELECT * from property natural join locality natural join description")
+            "SELECT * from property natural join locality natural join description where status != 'sold'")
         return(self.cursor.fetchall())
 
     def get_dealers(self, property_id: int):

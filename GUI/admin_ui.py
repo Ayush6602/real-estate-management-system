@@ -32,10 +32,10 @@ class AdminUi(tk.Canvas):
         self.create_image(0, 0, anchor='nw',
                           image=self.admin_bg_pimg)
         # set header text
-        head_txt_x = width // 2
-        head_txt_y = height // 5
+        head_txt_x = width / 2
+        head_txt_y = height / 5
         head_txt_font = f'ariel {min(width, height) // 20} bold'
-        self.create_text(head_txt_x, head_txt_y,
+        self.create_text(int(head_txt_x), int(head_txt_y),
                          text=self.title_text, font=head_txt_font, fill='yellow')
         # set command line text box
         cmd_ent_font = f'ariel {min(width, height) // 40}'
