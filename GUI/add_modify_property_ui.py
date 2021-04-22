@@ -109,7 +109,7 @@ class AddModifyProperty(tk.Canvas):
             self.description_bathroom.set(property_details['Bathrooms'])
             self.description_hall.set(property_details['Halls'])
             self.description_kitchen.set(property_details['Kitchens'])
-            self.property_image.set(property_details['image_link'])
+            self.property_image.set(property_details['Image Link'])
             self.property_address.set(property_details['Address'])
             self.property_price.set(property_details['Price'])
             self.property_rent.set(property_details['Rent'])

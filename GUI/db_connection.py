@@ -39,7 +39,13 @@ class DBConnection:
     def command_result(self, query: str) -> MySQLCursor:
         if not self.connection.is_connected():
             self.__init__()
-        self.cursor.execute(query)
+        try:
+            self.cursor.execute(query)
+            self.connection.commit()
+        except mysql.Error as error:
+            messagebox.showerror("Error", "Incorrect Command: {}".format(error))
+            self.connection.rollback()
+
         return self.cursor
 
     def get_rental_report(self) -> MySQLCursor:
@@ -87,8 +93,7 @@ class DBConnection:
     def get_property_id(self, address: str) -> int:
         if not self.connection.is_connected():
             self.__init__()
-        self.cursor.execute(
-            "SELECT id FROM property WHERE address = %s;", (address,))
+        self.cursor.execute("SELECT id FROM property WHERE address = %s;", (address,))
         return (self.cursor.fetchall()[0][0])
 
     def get_locality_id(self, locality: str) -> int:
